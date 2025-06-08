@@ -51,7 +51,8 @@ def get_model_suggestions():
 def pull_model(model_name):
     """Pull a model"""
     try:
-        response = requests.post(f"{BACKEND_URL}/pull", params={"model_name": model_name}, timeout=300)
+        # Use a very long timeout for model downloads (1 hour)
+        response = requests.post(f"{BACKEND_URL}/pull", params={"model_name": model_name}, timeout=3600)
         return response.status_code == 200, response.json()
     except Exception as e:
         return False, {"error": str(e)}
@@ -66,7 +67,8 @@ def chat_with_model(model, message, system_prompt=None, temperature=0.7, max_tok
             "temperature": temperature,
             "max_tokens": max_tokens
         }
-        response = requests.post(f"{BACKEND_URL}/chat", json=payload, timeout=120)
+        # Use a very long timeout for chat requests (20 minutes) for large models
+        response = requests.post(f"{BACKEND_URL}/chat", json=payload, timeout=1200)
         if response.status_code == 200:
             return response.json()
         else:
@@ -94,7 +96,7 @@ def main():
         # Available models
         st.subheader("📦 Installed Models")
         models = get_available_models()
-        
+
         if models:
             for model in models:
                 with st.expander(f"📊 {model['name']}"):
@@ -118,7 +120,12 @@ def main():
                     st.caption(f"{model['description']} ({model['size']})")
                 with col2:
                     if st.button("Pull", key=f"pull_{model['name']}"):
-                        with st.spinner(f"Pulling {model['name']}..."):
+                        # Show warning for large models
+                        if "large" in category.lower():
+                            st.warning("⚠️ Large model - this may take 10-30 minutes!")
+
+                        with st.spinner(f"Downloading {model['name']}... This may take several minutes for large models."):
+                            st.info("💡 Tip: Check the Docker logs to see download progress")
                             success, result = pull_model(model['name'])
                             if success:
                                 st.success("✅ Pulled!")
@@ -130,7 +137,10 @@ def main():
         st.subheader("🔧 Pull Custom Model")
         custom_model = st.text_input("Model name (e.g., llama3.2:1b)")
         if st.button("Pull Custom Model") and custom_model:
-            with st.spinner(f"Pulling {custom_model}..."):
+            # Show info about download time
+            st.info("ℹ️ Download time depends on model size. Large models (>10GB) can take 10-30 minutes.")
+            with st.spinner(f"Downloading {custom_model}... Please be patient for large models."):
+                st.info("💡 Tip: Check the Docker logs to see download progress")
                 success, result = pull_model(custom_model)
                 if success:
                     st.success("✅ Model pulled successfully!")

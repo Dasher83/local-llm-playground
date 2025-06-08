@@ -126,7 +126,9 @@ async def pull_model(model_name: str):
     """Pull a model from Ollama registry"""
     logger.info(f"Pull request for model: {model_name}")
     try:
-        async with httpx.AsyncClient(timeout=300.0) as client:
+        # Use a very long timeout for model downloads (1 hour)
+        timeout = httpx.Timeout(3600.0, connect=60.0)
+        async with httpx.AsyncClient(timeout=timeout) as client:
             logger.info(f"Sending pull request to {OLLAMA_BASE_URL}/api/pull")
             response = await client.post(
                 f"{OLLAMA_BASE_URL}/api/pull",
@@ -159,7 +161,9 @@ async def chat_with_model(request: ChatRequest):
         logger.debug(f"Prepared messages: {messages}")
 
         # Make request to Ollama
-        async with httpx.AsyncClient(timeout=120.0) as client:
+        # Use a very long timeout for chat requests (20 minutes) for large models
+        timeout = httpx.Timeout(1200.0, connect=60.0)
+        async with httpx.AsyncClient(timeout=timeout) as client:
             ollama_request = {
                 "model": request.model,
                 "messages": messages,
