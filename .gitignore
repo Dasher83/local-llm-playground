@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.env
+.env
+.venv
+venv/
+ENV/
+
+# VSCode
+.vscode/
+
+# Docker
+*.log
+docker-compose.override.yml
+
+# Ollama volume
+dumb_it_down/ollama_data/
+
+# Streamlit
+frontend/.streamlit/
+
+# Jupyter
+*.ipynb_checkpoints
+
+# System
+.DS_Store
+Thumbs.db
+
+# General
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# Ignore local data
+backend/.local_data/

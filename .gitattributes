@@ -1,0 +1,35 @@
+# Set default behavior to automatically normalize line endings
+* text=auto
+
+# Explicitly declare text files
+*.py text
+*.md text
+*.yml text
+*.yaml text
+*.json text
+*.toml text
+*.sh text
+*.txt text
+*.dockerignore text
+*.gitignore text
+*.gitattributes text
+*.env text
+
+# Treat notebooks as text for diff
+*.ipynb text
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.tar binary
+*.gz binary
+*.tgz binary
+*.bz2 binary
+*.xz binary
+*.mp4 binary
+*.mp3 binary
