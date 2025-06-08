@@ -1,11 +1,12 @@
-import streamlit as st
-import requests
 import json
-import time
 import os
+import time
 from datetime import datetime
-import plotly.express as px
+
 import pandas as pd
+import plotly.express as px
+import requests
+import streamlit as st
 
 # Configuration
 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")

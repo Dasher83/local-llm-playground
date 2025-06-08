@@ -1,10 +1,11 @@
+import json
+import os
+from typing import Dict, List, Optional
+
+import httpx
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import httpx
-import os
-import json
-from typing import List, Dict, Optional
 
 app = FastAPI(title="LLM Inference API", version="1.0.0")
 

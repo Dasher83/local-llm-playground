@@ -3,7 +3,6 @@ repos:
     rev: 25.1.0
     hooks:
       - id: black
-        files: ^(webpr-2.0)/.*$
 
   - repo: https://github.com/pre-commit/mirrors-isort
     rev: v5.10.1
@@ -14,33 +13,24 @@ repos:
     rev: v5.0.0
     hooks:
       - id: end-of-file-fixer
-        files: ^(webpr-2.0)/.*$
       - id: trailing-whitespace
-        files: ^(webpr-2.0)/.*$
       - id: debug-statements
-        files: ^(webpr-2.0)/.*$
       - id: check-merge-conflict
-        files: ^(webpr-2.0)/.*$
       - id: check-yaml
-        files: ^(webpr-2.0)/.*$
       - id: check-json
-        files: ^(webpr-2.0)/.*$
 
   - repo: https://github.com/pycqa/flake8
     rev: 7.2.0
     hooks:
       - id: flake8
         args: [--max-line-length=88]
-        files: ^(webpr-2.0)/.*$
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.15.0
+    rev: v1.16.0
     hooks:
       - id: mypy
-        files: ^(webpr-2.0)/.*$
 
   - repo: https://github.com/PyCQA/bandit
     rev: 1.8.3
     hooks:
       - id: bandit
-        files: ^(webpr-2.0)/.*$
