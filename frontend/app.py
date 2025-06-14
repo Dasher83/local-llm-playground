@@ -179,22 +179,6 @@ def main():
         # Performance tracking
         if "chat_history" not in st.session_state:
             st.session_state.chat_history = []
-        
-        if st.session_state.chat_history:
-            st.subheader("📊 Performance")
-            df = pd.DataFrame(st.session_state.chat_history)
-            
-            # Response time chart
-            if 'total_duration' in df.columns:
-                df['response_time_sec'] = df['total_duration'] / 1e9  # Convert nanoseconds to seconds
-                fig = px.line(df, y='response_time_sec', title="Response Time Over Time")
-                st.plotly_chart(fig, use_container_width=True)
-            
-            # Model usage
-            if 'model' in df.columns:
-                model_counts = df['model'].value_counts()
-                fig = px.pie(values=model_counts.values, names=model_counts.index, title="Model Usage")
-                st.plotly_chart(fig, use_container_width=True)
 
     with col1:
         st.subheader("💬 Chat Interface")
