@@ -6,6 +6,8 @@
 #
 altair==5.5.0
     # via streamlit
+annotated-types==0.7.0
+    # via pydantic
 attrs==25.3.0
     # via
     #   jsonschema
@@ -62,6 +64,10 @@ protobuf==6.31.1
     # via streamlit
 pyarrow==20.0.0
     # via streamlit
+pydantic==2.11.6
+    # via -r frontend/requirements.in
+pydantic-core==2.33.2
+    # via pydantic
 pydeck==0.9.1
     # via streamlit
 python-dateutil==2.9.0.post0
@@ -95,7 +101,12 @@ tornado==6.5.1
 typing-extensions==4.14.0
     # via
     #   altair
+    #   pydantic
+    #   pydantic-core
     #   streamlit
+    #   typing-inspection
+typing-inspection==0.4.1
+    # via pydantic
 tzdata==2025.2
     # via pandas
 urllib3==2.4.0
