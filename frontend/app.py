@@ -157,7 +157,7 @@ def main() -> None:
             st.success("✅ Backend Connected")
         else:
             st.error("❌ Backend Disconnected")
-            st.json(health_info.dict())
+            st.json(health_info.model_dump())
 
         # Available models
         st.subheader("📦 Installed Models")
@@ -327,7 +327,7 @@ def main() -> None:
                         {
                             "role": "assistant",
                             "content": response.response,
-                            "metadata": response.dict(),
+                            "metadata": response.model_dump(),
                         }
                     )
 
