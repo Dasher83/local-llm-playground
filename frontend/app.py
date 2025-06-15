@@ -1,58 +1,21 @@
 import os
 import time
 from datetime import datetime
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple
 
 import requests
 import streamlit as st
-from pydantic import BaseModel
+from models import (
+    ChatResponse,
+    ChatResult,
+    ErrorResponse,
+    HealthResponse,
+    ModelInfo,
+    ModelSuggestionsResponse,
+    PullResponse,
+)
 
-# Configuration
 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
-
-
-# Pydantic models (duplicated from backend for type safety)
-class ChatResponse(BaseModel):
-    response: str
-    model: str
-    total_duration: int
-    load_duration: int
-    prompt_eval_count: int
-    eval_count: int
-
-
-class ErrorResponse(BaseModel):
-    error: str
-
-
-class ModelInfo(BaseModel):
-    name: str
-    size: str
-    family: str
-    format: str
-    modified_at: str
-
-
-class ModelSuggestion(BaseModel):
-    name: str
-    description: str
-    size: str
-
-
-class ModelSuggestionsResponse(BaseModel):
-    lightweight: List[ModelSuggestion]
-    medium: List[ModelSuggestion]
-    large: List[ModelSuggestion]
-
-
-class HealthResponse(BaseModel):
-    status: str
-    ollama: Optional[str] = None
-    error: Optional[str] = None
-
-
-class PullResponse(BaseModel):
-    message: str
 
 
 st.set_page_config(
@@ -122,7 +85,7 @@ def chat_with_model(
     system_prompt: Optional[str] = None,
     temperature: float = 0.7,
     max_tokens: int = 1000,
-) -> Union[ChatResponse, ErrorResponse]:
+) -> ChatResult:
     """Send chat request to model"""
     try:
         payload = {
