@@ -1,11 +1,19 @@
 import logging
 import os
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 import httpx
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from models import (
+    ChatRequest,
+    ChatResponse,
+    HealthResponse,
+    ModelInfo,
+    ModelSuggestion,
+    ModelSuggestionsResponse,
+    PullResponse,
+)
 
 # Configure logging
 logging.basicConfig(
@@ -32,53 +40,6 @@ async def startup_event() -> None:
     logger.info("Starting LLM Inference API")
     logger.info(f"Ollama base URL: {OLLAMA_BASE_URL}")
     logger.info(f"Environment: {os.getenv('ENVIRONMENT', 'development')}")
-
-
-class ChatRequest(BaseModel):
-    model: str
-    message: str
-    system_prompt: Optional[str] = None
-    temperature: Optional[float] = 0.7
-    max_tokens: Optional[int] = 1000
-
-
-class ChatResponse(BaseModel):
-    response: str
-    model: str
-    total_duration: int
-    load_duration: int
-    prompt_eval_count: int
-    eval_count: int
-
-
-class ModelInfo(BaseModel):
-    name: str
-    size: str
-    family: str
-    format: str
-    modified_at: str
-
-
-class ModelSuggestion(BaseModel):
-    name: str
-    description: str
-    size: str
-
-
-class ModelSuggestionsResponse(BaseModel):
-    lightweight: List[ModelSuggestion]
-    medium: List[ModelSuggestion]
-    large: List[ModelSuggestion]
-
-
-class HealthResponse(BaseModel):
-    status: str
-    ollama: Optional[str] = None
-    error: Optional[str] = None
-
-
-class PullResponse(BaseModel):
-    message: str
 
 
 def format_bytes(bytes_size: int) -> str:
@@ -343,4 +304,4 @@ async def get_model_suggestions() -> ModelSuggestionsResponse:
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)  # nosec B104
