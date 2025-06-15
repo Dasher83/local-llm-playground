@@ -3,6 +3,7 @@ import os
 from typing import Dict, List
 
 import httpx
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from models import (
@@ -15,9 +16,16 @@ from models import (
     PullResponse,
 )
 
-# Configure logging
+load_dotenv()
+
+CHAT_TIMEOUT_SECONDS = float(os.getenv("CHAT_TIMEOUT_SECONDS", "90"))
+MODEL_PULL_TIMEOUT_SECONDS = float(os.getenv("MODEL_PULL_TIMEOUT_SECONDS", "3600"))
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    level=getattr(logging, LOG_LEVEL.upper()),
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
 
@@ -32,12 +40,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-
 
 @app.on_event("startup")
 async def startup_event() -> None:
     logger.info("Starting LLM Inference API")
+    logger.info(f"Chat timeout: {CHAT_TIMEOUT_SECONDS}s")
+    logger.info(f"Model pull timeout: {MODEL_PULL_TIMEOUT_SECONDS}s")
     logger.info(f"Ollama base URL: {OLLAMA_BASE_URL}")
     logger.info(f"Environment: {os.getenv('ENVIRONMENT', 'development')}")
 
@@ -144,8 +152,7 @@ async def pull_model(model_name: str) -> PullResponse:
     """Pull a model from Ollama registry"""
     logger.info(f"Pull request for model: {model_name}")
     try:
-        # Use a very long timeout for model downloads (1 hour)
-        timeout = httpx.Timeout(3600.0, connect=60.0)
+        timeout = httpx.Timeout(MODEL_PULL_TIMEOUT_SECONDS, connect=60.0)
         async with httpx.AsyncClient(timeout=timeout) as client:
             logger.info(f"Sending pull request to {OLLAMA_BASE_URL}/api/pull")
             response = await client.post(
@@ -187,8 +194,7 @@ async def chat_with_model(request: ChatRequest) -> ChatResponse:
         logger.debug(f"Prepared messages: {messages}")
 
         # Make request to Ollama
-        # Use a very long timeout for chat requests (20 minutes) for large models
-        timeout = httpx.Timeout(1200.0, connect=60.0)
+        timeout = httpx.Timeout(CHAT_TIMEOUT_SECONDS, connect=60.0)
         async with httpx.AsyncClient(timeout=timeout) as client:
             ollama_request = {
                 "model": request.model,

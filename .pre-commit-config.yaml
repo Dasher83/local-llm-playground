@@ -30,14 +30,25 @@ repos:
     rev: v1.16.0
     hooks:
       - id: mypy
+        name: mypy-backend
+        files: ^backend/
+        args: [--ignore-missing-imports, --explicit-package-bases]
         additional_dependencies:
           - types-requests
           - fastapi
-          - pydantic
-          - streamlit
           - httpx
           - uvicorn
-        args: [--strict]
+          - pydantic
+          - python-dotenv
+      - id: mypy
+        name: mypy-frontend
+        files: ^frontend/
+        args: [--ignore-missing-imports, --explicit-package-bases]
+        additional_dependencies:
+          - types-requests
+          - pydantic
+          - streamlit
+          - python-dotenv
 
   - repo: https://github.com/PyCQA/bandit
     rev: 1.8.3

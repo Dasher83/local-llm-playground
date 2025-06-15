@@ -5,6 +5,7 @@ from typing import List, Optional, Tuple
 
 import requests
 import streamlit as st
+from dotenv import load_dotenv
 from models import (
     ChatResponse,
     ChatResult,
@@ -15,7 +16,11 @@ from models import (
     PullResponse,
 )
 
+load_dotenv()
+
 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
+CHAT_TIMEOUT_SECONDS = float(os.getenv("CHAT_TIMEOUT_SECONDS", "90"))
+MODEL_PULL_TIMEOUT_SECONDS = float(os.getenv("MODEL_PULL_TIMEOUT_SECONDS", "3600"))
 
 
 st.set_page_config(
@@ -67,9 +72,10 @@ def get_model_suggestions() -> ModelSuggestionsResponse:
 def pull_model(model_name: str) -> Tuple[bool, PullResponse]:
     """Pull a model"""
     try:
-        # Use a very long timeout for model downloads (1 hour)
         response = requests.post(
-            f"{BACKEND_URL}/pull", params={"model_name": model_name}, timeout=3600
+            f"{BACKEND_URL}/pull",
+            params={"model_name": model_name},
+            timeout=MODEL_PULL_TIMEOUT_SECONDS,
         )
         if response.status_code == 200:
             return True, PullResponse(**response.json())
@@ -95,8 +101,9 @@ def chat_with_model(
             "temperature": temperature,
             "max_tokens": max_tokens,
         }
-        # Use a very long timeout for chat requests (20 minutes) for large models
-        response = requests.post(f"{BACKEND_URL}/chat", json=payload, timeout=1200)
+        response = requests.post(
+            f"{BACKEND_URL}/chat", json=payload, timeout=CHAT_TIMEOUT_SECONDS
+        )
         if response.status_code == 200:
             return ChatResponse(**response.json())
         else:
