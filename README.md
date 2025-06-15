@@ -17,7 +17,7 @@ This repository provides a ready-to-use environment for experimenting with local
 ### 2. Clone the Repository
 ```bash
 git clone <this-repo-url>
-cd dumb_it_down
+cd local_llm_playground
 ```
 
 ### 3. Start All Services

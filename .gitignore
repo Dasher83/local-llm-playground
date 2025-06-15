@@ -16,9 +16,6 @@ ENV/
 *.log
 docker-compose.override.yml
 
-# Ollama volume
-dumb_it_down/ollama_data/
-
 # Streamlit
 frontend/.streamlit/
 

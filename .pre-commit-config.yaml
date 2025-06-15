@@ -51,6 +51,6 @@ repos:
           - python-dotenv
 
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.8.3
+    rev: 1.8.4
     hooks:
       - id: bandit
