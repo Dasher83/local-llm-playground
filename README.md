@@ -20,6 +20,12 @@ git clone <this-repo-url>
 cd local_llm_playground
 ```
 
+### 2.1. Environment Setup (Optional)
+Copy the example environment file and customize if needed:
+```bash
+cp .env.example .env
+```
+
 ### 3. Start All Services
 ```bash
 docker compose up --build
@@ -54,31 +60,118 @@ Open your browser and go to: [http://localhost:8501](http://localhost:8501)
 ## ⚡ Example Usage
 1. **Pull a Model:** Use the sidebar to pull a suggested or custom model (e.g., `llama3.2:1b` for fast testing).
 2. **Chat:** Select the model, enter your prompt, and chat!
-3. **Experiment:** Try larger models to see what your laptop can handle. Monitor performance in the sidebar.
+3. **Experiment:** Try larger models to see what your laptop can handle.
 
 ---
 
-## 🛠️ Customization
-- **Add More Models:**
-  - Use the sidebar to pull any model available in Ollama's registry.
-- **Change Backend/Frontend:**
-  - Edit `backend/main.py` or `frontend/app.py` as needed.
-- **GPU Support:**
-  - Uncomment the `deploy` section in `docker-compose.yml` for NVIDIA GPU support (requires NVIDIA Docker runtime).
+## 🛠️ Development & Collaboration
+
+### Setting Up for Development
+
+#### 1. Prerequisites
+- [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/)
+- [Python 3.13+](https://www.python.org/downloads/)
+- [Git](https://git-scm.com/)
+
+#### 2. Clone and Setup
+```bash
+# Clone the repository
+git clone <this-repo-url>
+cd local_llm_playground
+
+# Set up environment variables
+cp .env.example .env
+# Edit .env file as needed
+
+# Create and activate Python virtual environment
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install development dependencies
+make install-dev-dependencies
+# Or manually: pip install -r dev.requirements.txt
+
+# Install pre-commit hooks
+pre-commit install
+```
+
+#### 3. Start Development Environment
+```bash
+docker compose up --build
+```
+
+### Available Make Commands
+
+#### 🧠 Ollama Model Management
+```bash
+# List installed models
+make ollama-list
+
+# Pull/download a new model
+make ollama-pull MODEL='llama3.2:1b'
+make ollama-pull MODEL='mistral:7b'
+make ollama-pull MODEL='codellama:13b'
+
+# Show detailed model information
+make ollama-show MODEL='llama3.2:1b'
+
+# Remove a model to free up space
+make ollama-remove MODEL='llama3.2:1b'
+
+# Clean up unused model data
+make ollama-cleanup
+```
+
+#### 📦 Dependency Management
+```bash
+# Install/upgrade development dependencies
+make install-dev-dependencies
+make upgrade-dev-dependencies
+
+# Compile requirements from .in files
+make compile-backend     # Updates backend/requirements.txt
+make compile-frontend    # Updates frontend/requirements.txt
+
+# Upgrade all dependencies to latest versions
+make upgrade-backend     # Upgrade backend dependencies
+make upgrade-frontend    # Upgrade frontend dependencies
+
+# Update pre-commit hooks
+make pre-commit-update
+```
+
+#### 📋 Logs & Monitoring
+```bash
+make logs            # View logs from all services
+make logs-backend    # View only backend logs
+make logs-frontend   # View only frontend logs
+make logs-ollama     # View only Ollama logs
+```
 
 ---
 
 ## 🧩 Project Structure
 ```
-docker-compose.yml
-backend/
-  Dockerfile
-  main.py
-  requirements.txt
-frontend/
-  Dockerfile
-  app.py
-  requirements.txt
+.
+├── .env.example              # Environment variables template
+├── .gitignore               # Git ignore patterns
+├── .pre-commit-config.yaml  # Pre-commit hooks configuration
+├── Makefile                 # Development commands
+├── README.md               # This file
+├── dev.requirements.txt    # Development dependencies
+├── docker-compose.yml      # Docker services configuration
+├── backend/                # FastAPI backend service
+│   ├── Dockerfile
+│   ├── main.py
+│   ├── models.py
+│   ├── requirements.in
+│   └── requirements.txt
+└── frontend/               # Streamlit frontend service
+    ├── Dockerfile
+    ├── app.py
+    ├── models.py
+    ├── requirements.in
+    └── requirements.txt
 ```
 
 ---
@@ -97,5 +190,6 @@ frontend/
 
 ---
 
-## 🚀 License
-MIT License. See [LICENSE](LICENSE) for details.
+## � License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
